@@ -1,5 +1,3 @@
-#!/bin/bash
-
 import argparse
 import json
 import sys
@@ -11,15 +9,19 @@ def _infer_type(o) -> Optional[str]:
         return "Optional[Any]"
     if isinstance(o, str):
         return 'str'
+    if isinstance(o, bool):
+        return 'bool'
     if isinstance(o, int):
         return 'int'
     if isinstance(o, float):
         return 'float'
+    if isinstance(o, dict) and not o:
+        return 'Dict'
     return None
 
 
 def _create_class_name(key: str) -> str:
-    return key.rstrip('s').title()
+    return key.title().replace('_', '')
 
 
 def _generate_from_dict(obj: Dict, name="Root", indent="    ") -> List[str]:
@@ -35,7 +37,7 @@ def _generate_from_dict(obj: Dict, name="Root", indent="    ") -> List[str]:
                 if len(value) == 0:
                     type = "List[Any]"
                 elif isinstance(value[0], dict):
-                    inner_class_name = _create_class_name(key)
+                    inner_class_name = _create_class_name(key).rstrip('s')
                     out = _generate_from_dict(value[0], name=inner_class_name, indent=indent) + out
                     type = f"List[{inner_class_name}]"
                 else:
