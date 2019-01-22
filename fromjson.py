@@ -40,9 +40,9 @@ def _generate_from_dict(obj: Dict, name="Root", indent="    ") -> List[str]:
                     type = f"List[{inner_class_name}]"
                 else:
                     type = f"List[{_infer_type(value[0])}]"
-            elif isinstance(value[0], dict):
+            elif isinstance(value, dict):
                 inner_class_name = _create_class_name(key)
-                out = _generate_from_dict(value[0], name=inner_class_name, indent=indent) + out
+                out = _generate_from_dict(value, name=inner_class_name, indent=indent) + out
                 type = inner_class_name
 
         out.append(indent + f"{key}: {type}")
