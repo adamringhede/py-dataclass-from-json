@@ -1,0 +1,1 @@
+# py-dataclass-from-json
